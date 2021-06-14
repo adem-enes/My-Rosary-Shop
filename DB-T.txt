@@ -1,0 +1,43 @@
+   Products                   categories                   subCategories?        shipping methods              standart discounts               cart
+--------------            ------------------            -----------------       -------------------           ---------------------         ----------------
+productId                  categoryId  <--------|        subCategoryId           shippingId                    discountId           ------>   cartID
+name                       name                 -------- categoryId              shippingCompany               discount             |         productsId
+images[blobs]                                            name                    shippingPrice                 cartId  --------------         totalPrice
+description                                                                                                            
+price                                           
+quantity                                            
+subCategoryId?           
+categoryId
+addedDate     
+
+
+_____________________________________________________________________________________________________________________________________________________________________
+
+Order
+----------
+orderId
+cartId
+shiphingId
+address
+city
+country
+
+
+
+Db -> MySql
+Backend -> NodeJs  
+Frontend -> ReactJs
+V-Post -> Vakif Bank 
+
+
+
+
+* We need a page for buying a product to see if it is ok and if it's coming how is it and stuff..
+
+
+
+
+ 
+isiklar939160459
+d7u8f7PI
+
