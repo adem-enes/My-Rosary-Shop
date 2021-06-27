@@ -4,7 +4,7 @@ import db from '../config/db.js';
 //Tables
 export const createProductsTable = (req, res) => {
     let sql = "CREATE TABLE IF NOT EXISTS products(id INT NOT NULL AUTO_INCREMENT, productName VARCHAR(50) NOT NULL," +
-        "image LONGTEXT NOT NULL, description VARCHAR(255) NOT NULL, price DOUBLE(10,2) NOT NULL DEFAULT 0," +
+        "image MEDIUMTEXT NOT NULL, description VARCHAR(255) NOT NULL, price DOUBLE(10,2) NOT NULL DEFAULT 0," +
         "quantity INT NOT NULL DEFAULT 1, addedDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP," +
         "categoryId INT NOT NULL DEFAULT 0," +
         "PRIMARY KEY (id), FOREIGN KEY (categoryId) REFERENCES categories (id));";
@@ -22,8 +22,9 @@ export const createCategoriesTable = (req, res) => {
 }
 export const createCartsTable = (req, res) => {
     let sql = "CREATE TABLE IF NOT EXISTS carts(id INT NOT NULL AUTO_INCREMENT," +
-        "totalPrice  DOUBLE(10,2) NOT NULL DEFAULT 0," +
-        "lastUpdatedTime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id));";
+        "totalPrice  DOUBLE(10,2) NOT NULL DEFAULT 0, userTokenId INT NOT NULL, " +
+        "lastUpdatedTime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id), "+
+        "FOREIGN KEY (userTokenId) REFERENCES usersTokens(id) ON DELETE CASCADE);";
 
     db.query(sql, (error, results) => {
         if (error) throw error;
@@ -49,7 +50,7 @@ export const createShippingMethodsTable = (req, res) => {
 }
 
 export const statuses = (req,res) => {
-    let sql = "CREATE TABLE IF NOT EXISTS statuses(id INT NOT NULL AUTO_INCREMENT, status VARCHAR(50) NOT NULL UNIQE,PRIMARY KEY (id));";
+    let sql = "CREATE TABLE IF NOT EXISTS statuses(id INT NOT NULL AUTO_INCREMENT, status VARCHAR(50) NOT NULL UNIQUE,PRIMARY KEY (id));";
     
     db.query(sql,(error, results) => {
         if (error) throw error;
@@ -73,6 +74,33 @@ export const createOrdersTable = (req, res) => {
     });
 }
 
+export const createUsersTokensTable = (req,res) => {
+    let sql = "CREATE TABLE IF NOT EXISTS usersTokens(id INT NOT NULL AUTO_INCREMENT, "+
+        "userToken VARCHAR(255) NOT NULL UNIQUE, createdTime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, "+
+        "PRIMARY KEY (id));"
+    
+    db.query(sql, (error, results) => {
+            if (error) throw error;
+    });
+}
+
+export const createUsersTable = (req, res) => {
+    let sql = "CREATE TABLE IF NOT EXISTS users(id INT NOT NULL AUTO_INCREMENT, "+
+    "username VARCHAR(50) NOT NULL, firstName VARCHAR(50) NOT NULL, lastName VARCHAR(50) NOT NULL,"+
+    "emailAddress VARCHAR(50) NOT NULL,..."+
+    "userTokenId INT NOT NULL, registeredTime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,"+
+    "PRIMARY KEY (id), FOREIGN KEY (userTokenId) REFERENCES usersTokesn (id)...);" 
+
+
+    //TODO : If someone on user table is deleted that userToken is going to deleted too.
+    //TODO : Probably triggers can do it..
+    
+    db.query(sql, (error, results) => {
+            if (error) throw error;
+    });
+}
+
+
 export const createAll = (req, res) => {
     createCategoriesTable();
     createProductsTable();
@@ -82,6 +110,7 @@ export const createAll = (req, res) => {
     statuses();
     createOrdersTable();
     orderedProducts();
+    createUsersTokensTable();
 
     res.send('All Done');
 };
@@ -93,7 +122,7 @@ const triggerProductsInCartsAfterInsert = () => {
         CREATE TRIGGER products_in_the_carts_AFTER_INSERT AFTER INSERT ON products_in_the_carts FOR EACH ROW
         BEGIN
             UPDATE carts SET lastUpdatedTime = NOW(),
-                totalPrice = (SELECT sum(products.price*products_in_the_carts.productQuantity) as totalPrice
+                totalPrice = (SELECT ifnull(sum(products.price*products_in_the_carts.productQuantity),0) as totalPrice
                     FROM products_in_the_carts INNER JOIN products ON products.id = products_in_the_carts.productId WHERE cartId = NEW.cartId)
                 WHERE id = NEW.cartId;
         END
@@ -105,7 +134,7 @@ const triggerProductsInCartsAfterUpdate = () => {
         CREATE TRIGGER products_in_the_carts_AFTER_UPDATE AFTER UPDATE ON products_in_the_carts FOR EACH ROW
         BEGIN
             UPDATE carts SET lastUpdatedTime = NOW(),
-                totalPrice = (SELECT sum(products.price*products_in_the_carts.productQuantity) as totalPrice
+                totalPrice = (SELECT ifnull(sum(products.price*products_in_the_carts.productQuantity),0) as totalPrice
                     FROM products_in_the_carts INNER JOIN products ON products.id = products_in_the_carts.productId WHERE cartId = NEW.cartId)
                 WHERE id = NEW.cartId;
         END
@@ -118,7 +147,7 @@ const triggerProductsInCartsAfterDelete = () => {
         CREATE TRIGGER products_in_the_carts_AFTER_DELETE AFTER DELETE ON products_in_the_carts FOR EACH ROW
         BEGIN
             UPDATE carts SET lastUpdatedTime = NOW(),
-                totalPrice = (SELECT sum(products.price*products_in_the_carts.productQuantity) as totalPrice
+                totalPrice = (SELECT ifnull(sum(products.price*products_in_the_carts.productQuantity),0) as totalPrice
                     FROM products_in_the_carts INNER JOIN products ON products.id = products_in_the_carts.productId WHERE cartId = OLD.cartId)
                 WHERE id = OLD.cartId;
         END
@@ -126,10 +155,21 @@ const triggerProductsInCartsAfterDelete = () => {
     db.query(sql, (error, results) => { if (error) throw error; });
 }
 
+const triggerUsersTokensAfterInsert = () => {
+    let sql = `
+        CREATE TRIGGER usersTokens_AFTER_INSERT AFTER INSERT ON usersTokens FOR EACH ROW 
+        BEGIN
+            INSERT INTO carts (userTokenId)VALUES (NEW.id);
+        END;`
+    
+    db.query(sql, (error, results) => { if (error) throw error; });
+}
+
 export const createAllTriggers = (req, res) => {
     triggerProductsInCartsAfterInsert();
     triggerProductsInCartsAfterUpdate();
     triggerProductsInCartsAfterDelete();
+    triggerUsersTokensAfterInsert();
 
     res.send('All Triggers Created..');
 }

@@ -9,26 +9,40 @@ export const productsInTheCarts = (req, res) => {
     });
 }
 
+export const allProductsInTheCart = (req, res) => {
+    const { cartId } = req.params;
+    getCartAndItsProducts(cartId, res);
+}
+
 export const sendProductToCart = (req, res) => {
     const { cartId, productId, quantity } = req.body;
     let sql = "INSERT INTO products_in_the_carts (cartId, productId, productQuantity) VALUES(?,?,?);";
 
     db.query(sql, [cartId, productId, quantity], (error, results) => {
         if (error) throw error;
-        res.send(results);
+
+        getCartAndItsProducts(cartId, res);
     });
 }
 
 export const addDelQty = (req, res) => {
     const { id } = req.params;
-    const { qty, cartId } = req.body;
-    let sql = 'UPDATE products_in_the_carts SET productQuantity = ? WHERE id = ? AND cartId = ?;'
+    const { productQuantity, cartId } = req.body;
+    let sql = productQuantity != 0 ?
+        'UPDATE products_in_the_carts SET productQuantity = ? WHERE id = ? AND cartId = ?;':
+        'DELETE FROM products_in_the_carts WHERE id = ?;';
+        
+    productQuantity !=0 ? 
+        db.query(sql, [productQuantity, id, cartId], (error, results) => {
+            if (error) throw error;
 
-    db.query(sql, [qty, id, cartId], (error, results) => {
-        if (error) throw error;
+            getCartAndItsProducts(cartId, res);
+        }):
+        db.query(sql, id, (error, results) => {
+            if (error) throw error;
 
-        res.send({ message: 'Changes Made' });
-    });
+            getCartAndItsProducts(cartId, res);
+        });
 }
 
 export const deleteProductFromCart = (req, res) => {
@@ -39,10 +53,35 @@ export const deleteProductFromCart = (req, res) => {
     db.query(sql, [id, cartId], (error, results) => {
         if (error) throw error;
 
-        res.send({ message: `This id: ${id} deleted from this cart: ${cartId}` });
+        getCartAndItsProducts(cartId, res);
     });
 }
 
+export const deleteAllProductsFromCart = (req, res) => {
+    const { cartId } = req.params;
+    let sql = 'DELETE FROM products_in_the_carts WHERE cartId = ?';
+
+    db.query(sql, [cartId], (error, results) => {
+        if (error) throw error;
+
+        getCartAndItsProducts(cartId, res);
+    });
+}
+
+const getCartAndItsProducts = (cartId, res) => {
+    let sql = 'SELECT * FROM carts WHERE id=?;' +
+    'SELECT pitc.*, p.productName, p.image, p.description, p.price  FROM products_in_the_carts as pitc LEFT JOIN products as p ' +
+    'ON p.id = pitc.productId WHERE cartId = ?;';
+
+    db.query(sql, [cartId, cartId], (error, results) => {
+        if (error) throw error;
+
+        const updatedCart = results[0][0];
+        const productsInTheCarts = results[1];
+
+        res.send({cart: updatedCart, productsInTheCarts});
+    });
+}
 
 const updateCart = (id) => {
     let sql = " UPDATE carts SET lastUpdatedTime = NOW()," +

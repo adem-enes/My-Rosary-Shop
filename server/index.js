@@ -10,6 +10,7 @@ import productsInCartsRoute from './routes/productsInCarts.js';
 import shippingMethodsRoute from './routes/shippingMethods.js';
 import ordersRoute from './routes/orders.js';
 import statusesRoute from './routes/statuses.js';
+import usersRoute from './routes/users.js';
 
 const app = express();
 app.use(cors());
@@ -24,7 +25,7 @@ app.use('/productsInCarts', productsInCartsRoute);
 app.use('/shippings', shippingMethodsRoute);
 app.use('/orders', ordersRoute);
 app.use('/statuses', statusesRoute);
-
+app.use('/users',usersRoute);
 
 
 

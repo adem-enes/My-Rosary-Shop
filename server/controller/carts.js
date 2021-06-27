@@ -12,12 +12,12 @@ export const createCart = (req, res) => {
 }
 
 export const cartInfo = (req, res) => {
-    const { id } = req.params;
-    let sql = "SELECT * FROM carts WHERE id = ?;";
+    const { tokenId } = req.params;
+    let sql = "SELECT * FROM carts WHERE userTokenId = ?;";
 
-    db.query(sql, id, (error, results) => {
+    db.query(sql, tokenId, (error, results) => {
         if (error) throw error;
-        res.send(results);
+        res.send(results[0]);
     });
 }
 export const carts = (req, res) => {

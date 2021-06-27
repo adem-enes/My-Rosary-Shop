@@ -5,7 +5,7 @@ import {
     createProductsTable, createCategoriesTable,
     createShippingMethodsTable, createCartsTable,
     createOrdersTable, createAll, productsInTheCarts,
-    createAllTriggers, createAllEvents
+    createAllTriggers, createAllEvents, createUsersTokensTable
 } from '../controller/createTheTables.js';
 
 
@@ -18,5 +18,6 @@ router.get('/pitc', productsInTheCarts);
 router.get('/all', createAll);
 router.get('/triggers', createAllTriggers);
 router.get('/events', createAllEvents);
+router.get('/userToken', createUsersTokensTable);
 
 export default router;

@@ -1,14 +1,17 @@
 import express from 'express';
 const router = express.Router();
 
-import { sendProductToCart, productsInTheCarts, addDelQty, deleteProductFromCart } from '../controller/productsInCarts.js';
-
-//TODO as a reminder because of mysql everything in this area should be 'router.get'.. or is it??
+import {
+    sendProductToCart, productsInTheCarts, allProductsInTheCart,
+    addDelQty, deleteProductFromCart, deleteAllProductsFromCart
+} from '../controller/productsInCarts.js';
 
 router.get('/', productsInTheCarts);
 router.post('/', sendProductToCart);
 router.patch('/:id', addDelQty);
-router.delete('/:id',deleteProductFromCart);
+router.delete('/:id', deleteProductFromCart);
+router.delete('/cart/:cartId', deleteAllProductsFromCart);
+router.get('/cart/:cartId', allProductsInTheCart);
 
 
 
