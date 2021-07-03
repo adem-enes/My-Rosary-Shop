@@ -5,20 +5,24 @@ import useStyle from './styles';
 import AddressForm from '../AddressForm';
 import PaymentForm from '../PaymentForm';
 
+import { useDispatch, useSelector} from 'react-redux';
 import { getShippingMethods } from '../../../redux/actions/shippingMethods';
-import { useDispatch } from 'react-redux';
+import { getAllProductsInCart } from '../../../redux/actions/carts';
 
 const steps = ['Shipping address', 'Payment details'];
 
-const Checkout = () => {
+const Checkout = ({cartId}) => {
     const dispatch = useDispatch();
     const classes = useStyle();
     const [activeStep, setActiveStep] = useState(0);
     const [shippingData, setShippingData] = useState({});
+    const shipping_methods = useSelector((state) => state.shippingMethods);
 
     useEffect(() => {
         dispatch(getShippingMethods());
-    }, [dispatch]);
+        dispatch(getAllProductsInCart(cartId));
+
+    }, [dispatch, cartId]);
 
     const nextStep = () => setActiveStep((prevActiveStep) => prevActiveStep + 1);
     const backStep = () => setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -28,8 +32,8 @@ const Checkout = () => {
     }
 
     const Form = () => activeStep === 0
-        ? <AddressForm next={next} />
-        : <PaymentForm shippingData={shippingData}
+        ? <AddressForm next={next} shipping_methods={shipping_methods}/>
+        : <PaymentForm shippingData={shippingData} cartId={cartId}
             backStep={backStep} nextStep={nextStep} />
 
     const Confirmation = () => (

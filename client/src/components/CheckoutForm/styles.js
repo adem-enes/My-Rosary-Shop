@@ -2,26 +2,21 @@ import { makeStyles } from '@material-ui/core/styles';
 
 export default makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
-  root: {
+  root:{
     display: 'flex',
+    justifyContent: 'center',
+    margin: '0',
+    padding: '0',
+    width: '100%',
   },
-  title: {
-    marginTop: '5%',
+  cartInfos: {
+    paddingTop: '2vh',
   },
-  emptyButton: {
-    minWidth: '120px',
-    [theme.breakpoints.down('xs')]: {
-      marginBottom: '5px',
-    },
-  },
-  checkoutButton: {
-    minWidth: '120px',
-  },
-  link: {
-    textDecoration: 'none',
+  cartVisual:{
   },
   cardDetails: {
     display: 'flex',
+    marginLeft: '2vh',
     flexDirection:'column',
     padding: '5vh',
     width: '100%',
@@ -32,5 +27,8 @@ export default makeStyles((theme) => ({
   },
   buttons:{
     display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flexGrow: '1',  
   }
 }));

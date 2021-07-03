@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Button, Card, CardActions, CardContent, CardMedia } from '@material-ui/core';
+import { Typography, Button, Card, Grid, ButtonBase } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 
 import useStyles from './styles';
@@ -26,19 +26,44 @@ const CartItem = ({ item }) => {
 
     return (
         <Card>
-            <CardMedia image={item.image} alt={item.productName} className={classes.media} />
-            <CardContent className={classes.cardContent}>
-                <Typography variant="h4">{item.productName}</Typography>
-            </CardContent>
-            <CardActions className={classes.cartActions}>
-                <Typography variant="h5">{item.price}{currency}</Typography>
-                <div className={classes.buttons}>
-                    <Button type="button" size="small" onClick={() => handleUpdateProducQty(item.id, item.productQuantity - 1)}>-</Button>
-                    <Typography>{item.productQuantity}</Typography>
-                    <Button type="button" size="small" onClick={() => handleUpdateProducQty(item.id, item.productQuantity + 1)}>+</Button>
-                </div>
-                <Button variant="contained" type="button" color="secondary" onClick={() => onRemoveFromCart(item.id)}>Remove</Button>
-            </CardActions>
+            <Grid container spacing={2}>
+                <Grid item>
+                    <ButtonBase className={classes.image}>
+                        <img className={classes.img} alt={item.productName} src={item.image} />
+                    </ButtonBase>
+                </Grid>
+                <Grid item xs={12} sm container>
+                    <Grid item xs container direction="column" spacing={2} className={classes.cardContent}>
+                        <Grid item xs>
+                            <Typography gutterBottom variant="subtitle1"> {item.productName}</Typography>
+                            <Typography variant="body2" gutterBottom color="textSecondary">
+                                {item.description}
+                            </Typography>
+                        </Grid>
+                        <Grid item>
+                            <Typography variant="body2" onClick={() => onRemoveFromCart(item.id)}
+                                className={classes.removeButton}>
+                                Remove
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                    <Grid className={classes.cartActions}>
+                        <Grid item>
+                            <Typography variant="subtitle1" style={{ textAlign: 'right', margin: '10px' }}
+                            >{item.price}{currency}</Typography>
+                        </Grid>
+                        <Grid item>
+                            <div className={classes.buttons}>
+                                <Button onClick={() => handleUpdateProducQty(item.id, item.productQuantity - 1)}
+                                    type="button" size="small" >-</Button>
+                                <Typography>{item.productQuantity}</Typography>
+                                <Button onClick={() => handleUpdateProducQty(item.id, item.productQuantity + 1)}
+                                    type="button" size="small" >+</Button>
+                            </div>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
         </Card>
     )
 }

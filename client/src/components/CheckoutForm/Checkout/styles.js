@@ -11,7 +11,7 @@ export default makeStyles((theme) => ({
     marginLeft: theme.spacing(2),
     marginRight: theme.spacing(2),
     [theme.breakpoints.up(600 + theme.spacing(2) * 2)]: {
-      width: 600,
+      width: 650,
       marginLeft: 'auto',
       marginRight: 'auto',
     },

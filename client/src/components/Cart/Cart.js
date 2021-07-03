@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Container, Typography, Button, Grid } from '@material-ui/core';
+import { Container, Typography, Button, Grid, List, ListItem, ListItemText, Divider } from '@material-ui/core';
 import CartItem from './CartItem/CartItem';
 import { Link } from 'react-router-dom';
 import useStyles from './styles';
@@ -31,25 +31,44 @@ const Cart = () => {
     );
 
     const FilledCart = () => (
-        <>
-            <Grid container spacing={3}>
+        <Grid container className={classes.root} spacing={2}>
+            <Grid container item spacing={2} xs={12} sm={8}>
                 {cartItems.map((item) => (
-                    <Grid item xs={12} sm={4} key={item.id}>
+                    <Grid item xs={12} sm={12} key={item.id}>
                         <CartItem item={item} />
                     </Grid>
                 ))}
             </Grid>
-            <div className={classes.cardDetails}>
-                <Typography variant="h4"> SubTotal: {cart.totalPrice}{currency} </Typography>
-                <div>
-                    <Button className={classes.emptyButton} size="large" type="button" variant="contained" color="secondary"
-                        onClick={handleEmptyCart}>Empty Cart</Button>
-                    <Button className={classes.checkoutButton} size="large" type="button" variant="contained" color="primary"
-                        component={Link} to='/checkout'>Checkout</Button>
-                </div>
+            <Grid container item className={classes.cardDetails} xs={12} sm={4}>
+                <Grid item>
+                    <Typography variant="h4" >Products</Typography>
+                    <List disablePadding>
+                        {cartItems.map((product) => (
+                            <ListItem style={{ padding: '0px' }} key={product.name}>
+                                <ListItemText secondary={product.productName}/>
+                                <Typography variant="body2">{currency}{product.price*product.productQuantity}</Typography>
+                            </ListItem>
+                        ))}
+                        <Divider />
+                        <ListItem style={{ padding: '10px 0px' }}>
+                            <ListItemText primary="SubTotal" />
+                            <Typography variant="subtitle1" style={{ fontWeight: 700 }}>
+                                {currency}{cart.totalPrice}
+                            </Typography>
+                        </ListItem>
+                    </List>
+                </Grid>
+                <Grid container item className={classes.buttons} spacing={2}>
+                    <Grid item xs={12} sm={12} md={6}>
+                        <Button className={classes.emptyButton} type="button" variant="outlined" color="secondary"
+                            onClick={handleEmptyCart}>Empty Cart</Button></Grid>
+                    <Grid item xs={12} sm={12} md={6}>
+                        <Button className={classes.checkoutButton} type="button" variant="contained" color="primary"
+                            component={Link} to='/checkout'>Checkout</Button></Grid>
+                </Grid>
 
-            </div>
-        </>
+            </Grid>
+        </Grid>
     );
 
     if (!cartItems) return 'Loading';

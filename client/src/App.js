@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Products, Navbar, Cart, Checkout } from './components';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { getProducts } from './redux/actions/products';
 import { getUserToken } from './redux/actions/tokens';
@@ -12,11 +12,12 @@ function App() {
 
   useEffect(() => {
     const checkToken = document.cookie.split('=').pop();
-
     dispatch(getProducts());
     checkToken ? dispatch(getCart(checkToken)) : dispatch(getUserToken());
 
   }, [dispatch]);
+
+  const cartId = useSelector(state => state.cart.id);
 
   return (
     <Router>
@@ -29,7 +30,7 @@ function App() {
             <Cart />
           </Route>
           <Route exact path="/checkout">
-            <Checkout />
+            <Checkout cartId={cartId}/>
           </Route>
         </Switch>
     </Router>
