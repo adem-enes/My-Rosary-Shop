@@ -1,8 +1,9 @@
 import React from 'react';
-import { Card, CardMedia, CardContent, CardActions, Typography, IconButton } from '@material-ui/core';
+import { Card, CardContent, CardActions, Typography, IconButton, Grid } from '@material-ui/core';
 import { AddShoppingCart } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { postProductToCart } from '../../../redux/actions/carts';
+import { Link } from 'react-router-dom';
 
 import useStyles from './styles';
 
@@ -14,18 +15,21 @@ const Product = ({ product }) => {
 
     const onAddToCart = (productId) => {
         dispatch(postProductToCart({
-            cartId:cartId,
+            cartId: cartId,
             productId,
-            quantity: 1 
+            quantity: 1
         }));
     }
 
     return (
         <Card className={classes.root}>
-            <CardMedia className={classes.media} image={product.image} title={product.name} />
+            <Grid style={{ display: 'flex', justifyContent: 'center' }}
+                component={Link} to={`/${product.id}`}>
+                <img className={classes.media} src={product.image} alt={product.name} />
+            </Grid>
             <CardContent>
                 <div className={classes.cardContent}>
-                    <Typography gutterBottom variant="h5" component="h2" >
+                    <Typography gutterBottom variant="h5" component="h3" >
                         {product.productName}
                     </Typography>
                 </div>

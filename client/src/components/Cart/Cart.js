@@ -40,13 +40,13 @@ const Cart = () => {
                 ))}
             </Grid>
             <Grid container item className={classes.cardDetails} xs={12} sm={4}>
-                <Grid item>
+                <Grid item style={{ width: '100%' }}>
                     <Typography variant="h4" >Products</Typography>
-                    <List disablePadding>
+                    <List>
                         {cartItems.map((product) => (
-                            <ListItem style={{ padding: '0px' }} key={product.name}>
-                                <ListItemText secondary={product.productName}/>
-                                <Typography variant="body2">{currency}{product.price*product.productQuantity}</Typography>
+                            <ListItem style={{ padding: '0px' }} key={product.id}>
+                                <ListItemText secondary={product.productName} />
+                                <Typography variant="body2">{currency}{product.price * product.productQuantity}</Typography>
                             </ListItem>
                         ))}
                         <Divider />
@@ -58,7 +58,7 @@ const Cart = () => {
                         </ListItem>
                     </List>
                 </Grid>
-                <Grid container item className={classes.buttons} spacing={2}>
+                <Grid container item spacing={1} style={{alignContent:'flex-end'}}>
                     <Grid item xs={12} sm={12} md={6}>
                         <Button className={classes.emptyButton} type="button" variant="outlined" color="secondary"
                             onClick={handleEmptyCart}>Empty Cart</Button></Grid>
@@ -66,7 +66,6 @@ const Cart = () => {
                         <Button className={classes.checkoutButton} type="button" variant="contained" color="primary"
                             component={Link} to='/checkout'>Checkout</Button></Grid>
                 </Grid>
-
             </Grid>
         </Grid>
     );
@@ -74,7 +73,7 @@ const Cart = () => {
     if (!cartItems) return 'Loading';
 
     return (
-        <Container>
+        <Container style={{ minHeight: '92.5vh', }}>
             <div className={classes.toolbar} />
             <Typography className={classes.title} variant="h3" gutterBottom>Your Shopping Cart</Typography>
             {!cartItems.length ? <EmptyCart /> : <FilledCart />}

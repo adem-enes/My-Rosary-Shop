@@ -6,6 +6,7 @@ export default makeStyles((theme) => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: theme.spacing(3),
+    minHeight: '95vh'
   },
   root: {
     flexGrow: 1,

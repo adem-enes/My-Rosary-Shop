@@ -22,15 +22,13 @@ export default makeStyles((theme) => ({
   },
   cardDetails: {
     display: 'flex',
-    flexDirection:'column',
-    padding: '5vh',
+    marginTop: '10px',
     width: '100%',
     textAlign: 'center',
     justifyContent: 'space-between',
     boxShadow: '0px 0px 5px 1px #8a8a8a',
-    maxHeight:'250px'
+    maxHeight: '400px',
+    marginBottom: '20px',
+    background: '#ffffff'
   },
-  buttons:{
-    display: 'flex',
-  }
 }));

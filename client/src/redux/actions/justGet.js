@@ -10,3 +10,14 @@ export const getShippingMethods = () => async (dispatch) => {
         throw error;
     }
 }
+
+export const getCategories = () => async (dispatch) => {
+    try {
+        const { data } = await api.fetchCategories();
+
+        dispatch({ type: 'FETCH_CATEGORIES', payload: data });
+        return data;
+    } catch (error) {
+        throw error;
+    }
+}

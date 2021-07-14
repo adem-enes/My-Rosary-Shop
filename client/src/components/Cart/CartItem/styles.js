@@ -1,6 +1,6 @@
 import { makeStyles } from '@material-ui/core/styles';
 
-export default makeStyles(() => ({
+export default makeStyles((theme) => ({
   img: {
     margin: 'auto',
     display: 'block',
@@ -21,6 +21,9 @@ export default makeStyles(() => ({
     justifyContent: 'space-between',
     flexDirection:'column',
     display: 'flex',
+    [theme.breakpoints.down('xs')]: {
+      minHeight:' 100px',
+    },
   },
   buttons: {
     display: 'flex',

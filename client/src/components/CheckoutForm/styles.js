@@ -30,5 +30,5 @@ export default makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     flexGrow: '1',  
-  }
+  },
 }));

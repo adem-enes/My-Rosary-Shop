@@ -18,6 +18,7 @@ const AddressForm = ({ next, shipping_methods }) => {
             lastName: event.target.lastName.value,
             address: event.target.address.value,
             email: event.target.email.value,
+            phoneNumber:event.target.phoneNumber.value,
             city: event.target.city.value,
             postalCode: event.target.zip.value,
             country: Country.getCountryByCode(country).name,

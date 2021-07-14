@@ -23,7 +23,7 @@ export const createCategoriesTable = (req, res) => {
 export const createCartsTable = (req, res) => {
     let sql = "CREATE TABLE IF NOT EXISTS carts(id INT NOT NULL AUTO_INCREMENT," +
         "totalPrice  DOUBLE(10,2) NOT NULL DEFAULT 0, userTokenId INT NOT NULL, " +
-        "lastUpdatedTime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id), "+
+        "lastUpdatedTime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (id), " +
         "FOREIGN KEY (userTokenId) REFERENCES usersTokens(id) ON DELETE CASCADE);";
 
     db.query(sql, (error, results) => {
@@ -49,54 +49,64 @@ export const createShippingMethodsTable = (req, res) => {
     });
 }
 
-export const statuses = (req,res) => {
+export const statuses = (req, res) => {
     let sql = "CREATE TABLE IF NOT EXISTS statuses(id INT NOT NULL AUTO_INCREMENT, status VARCHAR(50) NOT NULL UNIQUE,PRIMARY KEY (id));";
-    
-    db.query(sql,(error, results) => {
+
+    db.query(sql, (error, results) => {
         if (error) throw error;
     });
 }
 
 export const createOrdersTable = (req, res) => {
-    let sql = "CREATE TABLE IF NOT EXISTS orders(id INT NOT NULL AUTO_INCREMENT, "+
+    let sql = "CREATE TABLE IF NOT EXISTS orders(id INT NOT NULL AUTO_INCREMENT, " +
         "customerName VARCHAR(45) NOT NULL, customerLastName VARCHAR(45) NOT NULL, " +
-        "customerEmail VARCHAR(45) NOT NULL, customerPhoneNumber VARCHAR(45) NOT NULL, "+
-        "address VARCHAR(45) NOT NULL, city VARCHAR(45) NOT NULL, state VARCHAR(45) NOT NULL, "+
-        "country VARCHAR(45) NOT NULL, orderDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, "+
-        "shippingCompany VARCHAR(45) NOT NULL, shippingPrice DOUBLE(10,2) NOT NULL, "+
-        "productsPrice DOUBLE(10,2) NOT NULL, totalPrice DOUBLE(10,2) NOT NULL, "+
-        "status VARCHAR(50) NOT NULL, "+
+        "customerEmail VARCHAR(45) NOT NULL, customerPhoneNumber VARCHAR(45) NOT NULL, " +
+        "address VARCHAR(45) NOT NULL, city VARCHAR(45) NOT NULL,postalCode INT NOT NULL, " +
+        "state VARCHAR(45) NOT NULL, country VARCHAR(45) NOT NULL, " +
+        "orderDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
+        "shippingCompany VARCHAR(45) NOT NULL, shippingPrice DOUBLE(10,2) NOT NULL, " +
+        "productsPrice DOUBLE(10,2) NOT NULL, totalPrice DOUBLE(10,2) NOT NULL, " +
+        "status VARCHAR(50) NOT NULL, " +
         "PRIMARY KEY (id), " +
         "FOREIGN KEY (status) REFERENCES statuses (status) ON UPDATE CASCADE );";
-        
+
     db.query(sql, (error, results) => {
         if (error) throw error;
     });
 }
 
-export const createUsersTokensTable = (req,res) => {
-    let sql = "CREATE TABLE IF NOT EXISTS usersTokens(id INT NOT NULL AUTO_INCREMENT, "+
-        "userToken VARCHAR(255) NOT NULL UNIQUE, createdTime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, "+
+export const createUsersTokensTable = (req, res) => {
+    let sql = "CREATE TABLE IF NOT EXISTS usersTokens(id INT NOT NULL AUTO_INCREMENT, " +
+        "userToken VARCHAR(255) NOT NULL UNIQUE, createdTime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
         "PRIMARY KEY (id));"
-    
+
     db.query(sql, (error, results) => {
-            if (error) throw error;
+        if (error) throw error;
     });
 }
 
 export const createUsersTable = (req, res) => {
-    let sql = "CREATE TABLE IF NOT EXISTS users(id INT NOT NULL AUTO_INCREMENT, "+
-    "username VARCHAR(50) NOT NULL, firstName VARCHAR(50) NOT NULL, lastName VARCHAR(50) NOT NULL,"+
-    "emailAddress VARCHAR(50) NOT NULL,..."+
-    "userTokenId INT NOT NULL, registeredTime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,"+
-    "PRIMARY KEY (id), FOREIGN KEY (userTokenId) REFERENCES usersTokesn (id)...);" 
+    let sql = "CREATE TABLE IF NOT EXISTS users(id INT NOT NULL AUTO_INCREMENT, " +
+        "username VARCHAR(50) NOT NULL UNIQUE, firstName VARCHAR(50) NOT NULL, lastName VARCHAR(50) NOT NULL," +
+        "emailAddress VARCHAR(50) NOT NULL, password VARCHAR(50) NOT NULL, authorization INT NOT NULL," +
+        "userTokenId INT NOT NULL, registeredTime DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+        "PRIMARY KEY (id), FOREIGN KEY (userTokenId) REFERENCES usersTokens (id), " +
+        "FOREIGN KEY (authorization) REFERENCES authorizations (id));"
 
 
     //TODO : If someone on user table is deleted that userToken is going to deleted too.
     //TODO : Probably triggers can do it..
-    
+
     db.query(sql, (error, results) => {
-            if (error) throw error;
+        if (error) throw error;
+    });
+}
+export const createAuthorizationsTable = (req, res) => {
+    let sql = "CREATE TABLE IF NOT EXISTS authorizations(id INT NOT NULL AUTO_INCREMENT, " +
+        "authName VARCHAR(50)NOT NULL UNIQUE, PRIMARY KEY (id));"
+
+    db.query(sql, (error, results) => {
+        if (error) throw error;
     });
 }
 
@@ -109,8 +119,10 @@ export const createAll = (req, res) => {
     productsInTheCarts();
     statuses();
     createOrdersTable();
-    orderedProducts();
+    // orderedProducts();
     createUsersTokensTable();
+    createAuthorizationsTable();
+    createUsersTable();
 
     res.send('All Done');
 };
@@ -161,7 +173,7 @@ const triggerUsersTokensAfterInsert = () => {
         BEGIN
             INSERT INTO carts (userTokenId)VALUES (NEW.id);
         END;`
-    
+
     db.query(sql, (error, results) => { if (error) throw error; });
 }
 
@@ -188,5 +200,5 @@ export const createAllEvents = (req, res) => {
     createDeleteCartEvent();
 
     res.send('All Events Created');
-}    
+}
 

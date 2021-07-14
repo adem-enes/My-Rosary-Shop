@@ -32,7 +32,7 @@ const CartItem = ({ item }) => {
                         <img className={classes.img} alt={item.productName} src={item.image} />
                     </ButtonBase>
                 </Grid>
-                <Grid item xs={12} sm container>
+                <Grid item xs={6} sm container>
                     <Grid item xs container direction="column" spacing={2} className={classes.cardContent}>
                         <Grid item xs>
                             <Typography gutterBottom variant="subtitle1"> {item.productName}</Typography>

@@ -1,9 +1,10 @@
 import express from 'express';
 const router = express.Router();
 
-import {createUserToken, getUserToken} from '../controller/users.js';
+import { createUserToken, getUserToken, userLogin } from '../controller/users.js';
 
- router.get('/token', getUserToken);
- router.post('/token', createUserToken);
+router.get('/token', getUserToken);
+router.post('/token', createUserToken);
+router.post('/login', userLogin);
 
 export default router;

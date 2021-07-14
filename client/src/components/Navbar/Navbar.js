@@ -12,17 +12,19 @@ const Navbar = () => {
     const location = useLocation();
 
     return (
-        <>
+        <div className={classes.grow}>
             <AppBar position="fixed" className={classes.appBar} color="inherit">
-                <Toolbar>
-                    <Typography component={Link} to="/" variant="h6" className={classes.title} color="inherit">
-                        <img src={logo} alt="" height="25px" className={classes.image} />
-                        Commerce
+                <Toolbar className={classes.toolbar}>
+                    <img src={logo} alt="" height="40px" className={classes.image} />
+                    <Typography component={Link} to="/" variant="h6"
+                        className={classes.title} color="inherit">
+                        Tesbihcim Oltu
                     </Typography>
                     <div className={classes.grow} />
                     {location.pathname === '/' &&
                         <div className={classes.button}>
-                            <IconButton component={Link} to="/cart" aria-label="Show cart items" color="inherit">
+                            <IconButton component={Link} to="/cart"
+                                aria-label="Show cart items" color="inherit">
                                 <Badge badgeContent={totalItems} color="secondary">
                                     <ShoppingCart />
                                 </Badge>
@@ -31,7 +33,7 @@ const Navbar = () => {
                     }
                 </Toolbar>
             </AppBar>
-        </>
+        </div>
     )
 }
 

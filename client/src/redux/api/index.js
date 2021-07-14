@@ -15,3 +15,6 @@ export const deleteProductInCart = (prodInCartId, updateCart) =>
     axios.delete(`${url}/productsInCarts/${prodInCartId}`, updateCart);
 
 export const fetchShippingMethods = () => axios.get(`${url}/shippings`);
+export const fetchCategories = () => axios.get(`${url}/categories`);
+
+export const order = (orderData) => axios.post(`${url}/orders/`, orderData);

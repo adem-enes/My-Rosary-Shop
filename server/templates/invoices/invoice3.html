@@ -51,7 +51,7 @@
             <!-- Main Content -->
             <main>
                 <div class="row m-3">
-                    <div class="col-6"><strong>Date:</strong> {{order.orderDate}}</div>
+                    <div class="col-6"><strong>Date:</strong> {{order.orderDateTr}}</div>
                     <div class="col-6 text-end"> <strong>Invoice No:</strong> {{order.id}}</div>
 
                 </div>
@@ -95,25 +95,25 @@
                                             <td class="col-1 text-end border-0 border-end">{{@index}}</td>
                                             <td class="col-4 text-1 border-0">{{productName}}</td>
                                             <td class="col-2 text-center border-0">
-                                                <img src="{{image}}" alt="404" width="10" height="10" /></td>
+                                                <img src={{image}} alt="404" width="30" height="30" /></td>
                                             <td class="col-1 text-center border-0">{{productQuantity}}</td>
                                             <td class="col-2 text-end border-0">{{price}}</td>
-                                            <td class="col-2 text-end border-0">{{total}}</td>
+                                            <td class="col-2 text-end border-0">₺{{total}}</td>
                                         </tr>
                                     {{/each}}
                                 </tbody>
                                 <tfoot class="card-footer text-end">
                                     <tr>
                                         <td colspan="5"><strong>Sub Total:</strong></td>
-                                        <td>{{order.productsPrice}}</td>
+                                        <td>₺{{order.productsPrice}}</td>
                                     </tr>
                                     <tr>
                                         <td colspan="5"><strong>Shipping:</strong></td>
-                                        <td>{{order.shippingPrice}}</td>
+                                        <td>₺{{order.shippingPrice}}</td>
                                     </tr>
                                     <tr>
                                         <td colspan="5" ><strong>Total:</strong></td>
-                                        <td>{{order.totalPrice}}</td>
+                                        <td>₺{{order.totalPrice}}</td>
                                     </tr>
                                 </tfoot>
                             </table>

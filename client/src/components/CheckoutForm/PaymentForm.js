@@ -4,8 +4,9 @@ import Review from './Review';
 import Cards from 'react-credit-cards';
 import useStyles from './styles';
 import "react-credit-cards/es/styles-compiled.css";
+import { order } from '../../redux/api';
 
-const PaymentForm = ({ shippingData, backStep, nextStep, cartId }) => {
+const PaymentForm = ({ shippingData, backStep, nextStep, cartId, setOrder }) => {
     const classes = useStyles();
     const [creditCart, setCreditCart] = useState({
         cvc: '',
@@ -18,7 +19,6 @@ const PaymentForm = ({ shippingData, backStep, nextStep, cartId }) => {
     const handleInputFocus = (e) => setCreditCart({ ...creditCart, focus: e.target.name });
 
     const handleSubmit = async (event) => {
-        event.preventDefault();
 
         // if (DidAPIAccept) {
         //     console.log(error);
@@ -26,15 +26,15 @@ const PaymentForm = ({ shippingData, backStep, nextStep, cartId }) => {
         //TODO add to Order Table 
         // TODO If Bank api accept the payment
         const orderData = {
-            customerName: shippingData.firstname,
-            customerLastName: shippingData.lastname,
+            customerName: shippingData.firstName,
+            customerLastName: shippingData.lastName,
             customerEmail: shippingData.email,
             customerPhoneNumber: shippingData.phoneNumber,
             address: shippingData.address,
             city: shippingData.city,
-            postalCode: shippingData.zip,
-            state: shippingData.shippingSubdivision,
-            country: shippingData.shippingCountry,
+            postalCode: shippingData.postalCode,
+            state: shippingData.state,
+            country: shippingData.country,
             shippingMethodId: shippingData.shipping.id,
             cartId: cartId
         }
@@ -44,8 +44,13 @@ const PaymentForm = ({ shippingData, backStep, nextStep, cartId }) => {
             cartCvc: creditCart.cvc,
             cartExpiry: creditCart.expiry,
         }
+        console.log(cartData);
+        order(orderData).then((response) => setOrder(response.data));
 
-        nextStep();
+        setTimeout(() => nextStep(), 1000);
+
+        event.preventDefault();
+
         // }
     }
 

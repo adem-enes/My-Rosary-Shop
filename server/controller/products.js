@@ -42,14 +42,16 @@ export const getTheProduct = (req, res) => {
 }
 
 export const updateProduct = (req, res) => {
-    let sql = "UPDATE products SET categoryId=? WHERE id=?";
+    let sql = "UPDATE products SET  categoryId=?, productName=?, image=?, " +
+        "description=?, price=?, quantity=? WHERE id=?";
     const { productName, image, description, price, quantity, categoryId } = req.body;
     const { id } = req.params;
 
     //!I need to find which one or ones has changed so I can update them...
     //I randomly put productName in there I really need to do this ↑ thing..
-    db.query(sql, [categoryId, id], (error, results) => {
-        if (error) throw error;
-        res.send({ message: 'Product Updated' });
-    });
+    db.query(sql, [categoryId, productName,
+        image, description, price, quantity, id], (error, results) => {
+            if (error) throw error;
+            res.send({ message: 'Product Updated' });
+        });
 }

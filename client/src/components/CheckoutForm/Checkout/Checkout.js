@@ -1,22 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { Paper, Stepper, Step, StepLabel, Typography, CssBaseline } from '@material-ui/core';
+import {
+    Paper, Stepper, Step, StepLabel,
+    Typography, CssBaseline, CircularProgress
+} from '@material-ui/core';
 
 import useStyle from './styles';
 import AddressForm from '../AddressForm';
 import PaymentForm from '../PaymentForm';
+import Confirmation from '../Confirmation';
 
-import { useDispatch, useSelector} from 'react-redux';
-import { getShippingMethods } from '../../../redux/actions/shippingMethods';
+import { useDispatch, useSelector } from 'react-redux';
+import { getShippingMethods } from '../../../redux/actions/justGet';
 import { getAllProductsInCart } from '../../../redux/actions/carts';
 
 const steps = ['Shipping address', 'Payment details'];
 
-const Checkout = ({cartId}) => {
+const Checkout = ({ cartId }) => {
     const dispatch = useDispatch();
     const classes = useStyle();
     const [activeStep, setActiveStep] = useState(0);
     const [shippingData, setShippingData] = useState({});
     const shipping_methods = useSelector((state) => state.shippingMethods);
+    const [order, setOrder] = useState({});
 
     useEffect(() => {
         dispatch(getShippingMethods());
@@ -32,13 +37,9 @@ const Checkout = ({cartId}) => {
     }
 
     const Form = () => activeStep === 0
-        ? <AddressForm next={next} shipping_methods={shipping_methods}/>
+        ? <AddressForm next={next} shipping_methods={shipping_methods} />
         : <PaymentForm shippingData={shippingData} cartId={cartId}
-            backStep={backStep} nextStep={nextStep} />
-
-    const Confirmation = () => (
-        <div>Confirmation</div>
-    )
+            backStep={backStep} nextStep={nextStep} setOrder={setOrder} />
 
     return (
         <>
@@ -54,7 +55,9 @@ const Checkout = ({cartId}) => {
                             </Step>
                         ))}
                     </Stepper>
-                    {activeStep === steps.length ? <Confirmation /> : <Form />}
+                    {activeStep === steps.length ?
+                        (order ? <Confirmation order={order} /> : <CircularProgress />)
+                        : <Form />}
                 </Paper>
             </main>
         </>
