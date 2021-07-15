@@ -11,6 +11,7 @@ import shippingMethodsRoute from './routes/shippingMethods.js';
 import ordersRoute from './routes/orders.js';
 import statusesRoute from './routes/statuses.js';
 import usersRoute from './routes/users.js';
+import db from './config/db.js';
 
 const app = express();
 app.use(cors());
