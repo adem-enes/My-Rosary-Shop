@@ -15,7 +15,7 @@ const transport = {
 }
 const transporter = mailer.createTransport(transport);
 transporter.verify((error, success) => {
-    if (error) throw error;
+    if (error) console.log(error.errno + ' ' + error.code + ' ' + error.message);
     else console.log('Server is ready to take message');
 });
 
@@ -58,7 +58,7 @@ const sendMail = async (to, subject, template, attachmentFile = null) => {
     //TODO Also what is subject
 
     const mailData = attachmentFile ? await getEmailDataWithAtt(to, subject, template, attachmentFile)
-        : await getEmailData(to,subject, template);
+        : await getEmailData(to, subject, template);
 
     transporter.sendMail(mailData, (err, data) => {
         console.log('Email Sent');

@@ -115,12 +115,12 @@ export const createAll = (req, res) => {
     createCategoriesTable();
     createProductsTable();
     createShippingMethodsTable();
+    createUsersTokensTable();
     createCartsTable();
     productsInTheCarts();
     statuses();
     createOrdersTable();
     // orderedProducts();
-    createUsersTokensTable();
     createAuthorizationsTable();
     createUsersTable();
 
