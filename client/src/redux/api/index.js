@@ -1,5 +1,5 @@
 import axios from 'axios';
-const url = 'https://tesbihcim-database.herokuapp.com';
+const url = 'http://localhost:3001';
 
 export const fetchProducts = () => axios.get(`${url}/products`);
 

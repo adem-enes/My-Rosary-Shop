@@ -28,10 +28,8 @@ app.use('/orders', ordersRoute);
 app.use('/statuses', statusesRoute);
 app.use('/users',usersRoute);
 
-app.get('/',(req,res)=>{
-  res.send('Welcome to Jumanji..');
-})
 
-app.listen(process.env.PORT||'3001', (req, res) => {
+
+app.listen('3001', (req, res) => {
     console.log('Server Running');
 });

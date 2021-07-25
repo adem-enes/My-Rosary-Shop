@@ -1,5 +1,5 @@
 import axios from 'axios';
-const url = 'https://tesbihcim-database.herokuapp.com';
+const url = 'http://localhost:3001';
 
 
 export const login = (loginInfo) => axios.post(`${url}/users/login`,loginInfo);
