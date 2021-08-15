@@ -5,7 +5,7 @@ export const getAllProducts = (req, res) => {
         " ON products.categoryId =  categories.id";
 
     db.query(sql, (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
         res.send(results);
     });
 }
@@ -15,7 +15,7 @@ export const createProduct = (req, res) => {
     const { productName, image, description, price, quantity, categoryId } = req.body;
 
     db.query(sql, [productName, image, description, price, quantity, categoryId], (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
         res.send({ message: 'Product Created Successfully' });
     });
 }
@@ -25,7 +25,7 @@ export const deleteProduct = (req, res) => {
     const { id } = req.params;
 
     db.query(sql, id, (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
         res.send({ message: 'Product deleted' });
     });
 }
@@ -35,7 +35,7 @@ export const getTheProduct = (req, res) => {
     let sql = "SELECT * FROM products WHERE id = ?";
 
     db.query(sql, id, (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
         results.length == 0 ? res.send({ message: "There is no product like this." })
             : res.send(results);
     });
@@ -51,7 +51,7 @@ export const updateProduct = (req, res) => {
     //I randomly put productName in there I really need to do this ↑ thing..
     db.query(sql, [categoryId, productName,
         image, description, price, quantity, id], (error, results) => {
-            if (error) throw error;
+            if (error) console.log(error.message);
             res.send({ message: 'Product Updated' });
         });
 }

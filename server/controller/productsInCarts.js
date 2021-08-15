@@ -4,7 +4,7 @@ export const productsInTheCarts = (req, res) => {
     let sql = "SELECT * FROM products_in_the_carts;";
 
     db.query(sql, (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
         res.send(results);
     });
 }
@@ -19,7 +19,7 @@ export const sendProductToCart = (req, res) => {
     let sql = "INSERT INTO products_in_the_carts (cartId, productId, productQuantity) VALUES(?,?,?);";
 
     db.query(sql, [cartId, productId, quantity], (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
 
         getCartAndItsProducts(cartId, res);
     });
@@ -34,12 +34,12 @@ export const addDelQty = (req, res) => {
         
     productQuantity !=0 ? 
         db.query(sql, [productQuantity, id, cartId], (error, results) => {
-            if (error) throw error;
+            if (error) console.log(error.message);
 
             getCartAndItsProducts(cartId, res);
         }):
         db.query(sql, id, (error, results) => {
-            if (error) throw error;
+            if (error) console.log(error.message);
 
             getCartAndItsProducts(cartId, res);
         });
@@ -51,7 +51,7 @@ export const deleteProductFromCart = (req, res) => {
     let sql = 'DELETE FROM products_in_the_carts WHERE id = ? AND cartId = ?';
 
     db.query(sql, [id, cartId], (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
 
         getCartAndItsProducts(cartId, res);
     });
@@ -62,7 +62,7 @@ export const deleteAllProductsFromCart = (req, res) => {
     let sql = 'DELETE FROM products_in_the_carts WHERE cartId = ?';
 
     db.query(sql, [cartId], (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
 
         getCartAndItsProducts(cartId, res);
     });
@@ -74,7 +74,7 @@ const getCartAndItsProducts = (cartId, res) => {
     'ON p.id = pitc.productId WHERE cartId = ?;';
 
     db.query(sql, [cartId, cartId], (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
 
         const updatedCart = results[0][0];
         const productsInTheCarts = results[1];

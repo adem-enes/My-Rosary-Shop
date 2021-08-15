@@ -6,7 +6,7 @@ export const getOrders = (req, res) => {
     let sql = "SELECT * FROM orders";
 
     db.query(sql, (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
         res.send(results);
     });
 }
@@ -18,16 +18,16 @@ export const createOrder = (req, res) => {
         shippingMethodId, cartId } = req.body;
 
     let sqlOrder = "INSERT INTO orders (customerName, customerLastName, customerEmail," +
-        " customerPhoneNumber, address, city, postalCode, state, country, status, shippingCompany, " +
-        " shippingPrice, productsPrice, totalPrice ) " +
-        "SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Sipariş Alındı'," +
+        " customerPhoneNumber, address, city, postalCode, state, country, status, cartId," +
+        " shippingCompany, shippingPrice, productsPrice, totalPrice ) " +
+        " SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Sipariş Alındı',?, " +
         " shippingCompany, shippingPrice, totalPrice as cartsTotalPrice, " +
         " sum(carts.totalPrice + shipping_methods.shippingPrice) as totalPrice " +
         "FROM shipping_methods, carts WHERE shipping_methods.id = ? AND carts.id = ?;"
 
     db.query(sqlOrder, [customerName, customerLastName, customerEmail, customerPhoneNumber,
-        address, city, postalCode, state, country, shippingMethodId, cartId], (error, results) => {
-            if (error) throw error;
+        address, city, postalCode, state, country, cartId, shippingMethodId, cartId], (error, results) => {
+            if (error) console.log(error.message);
             callIt(res, cartId, results.insertId);
         });
     // TODO after this create new function to get order infos and all products that ordered..
@@ -36,7 +36,7 @@ export const createOrder = (req, res) => {
 }
 const callIt = (res, cartId, orderId) => {
     const formatterTR = new Intl.DateTimeFormat('tr', { dateStyle: 'full' });
-    let sql = "SELECT p.id as productId, p.productName, p.image, " +
+    let sql = "SELECT p.id as productId, p.productName, " +
         " p.price, pinthec.productQuantity FROM products as p " +
         " LEFT JOIN products_in_the_carts as pinthec ON" +
         " p.id = pinthec.productId WHERE cartId = ?; " +
@@ -51,7 +51,7 @@ const callIt = (res, cartId, orderId) => {
 
         theOrder.order.productsPrice = theOrder.order.productsPrice.toFixed(2);
         theOrder.order.orderDateTr = orderDate;
-        
+
         theOrder.orderedProducts.map((product) => {
             const newOne = product;
             newOne.total = (newOne.price * newOne.productQuantity).toFixed(2);
@@ -69,31 +69,37 @@ export const callOrder = (req, res) => {
     const { id } = req.params;
     let sql = "SELECT * FROM orders WHERE id = ?;";
 
-    db.query(sql, [id], (error, results) => {
-        if (error) throw error;
+    db.query(sql, id, (error, results) => {
+        if (error) console.log(error.message);
         res.send(results);
     });
 }
 
 export const callOrderWithProducts = (req, res) => {
     const { cartId, orderId } = req.params;
-    let sql = "SELECT p.id, p.productName, p.image, " +
+    const formatterTR = new Intl.DateTimeFormat('tr', { dateStyle: 'full' });
+    let sql = "SELECT p.id as productId, p.productName, " +
         " p.price, pinthec.productQuantity FROM products as p " +
         " LEFT JOIN products_in_the_carts as pinthec ON" +
         " p.id = pinthec.productId WHERE cartId = ?; " +
         "SELECT * FROM orders WHERE id = ?;";
-
     db.query(sql, [cartId, orderId], (error, results) => {
         const theOrder = {
             orderedProducts: results[0],
             order: results[1][0]
         };
+        const date = new Date(theOrder.order?.orderDate);
+        const orderDate = formatterTR.format(date);
+
+        theOrder.order.productsPrice = theOrder.order.productsPrice.toFixed(2);
+        theOrder.order.orderDateTr = orderDate;
+
         theOrder.orderedProducts.map((product) => {
-            product.total = (product.price * product.productQuantity).toFixed(2);
+            const newOne = product;
+            newOne.total = (newOne.price * newOne.productQuantity).toFixed(2);
+            return newOne;
         });
 
-        generatePdf(theOrder, 'invoice3')
-            .then(sendMail(theOrder.order, 'Order Accepted', 'OrderAcc'));
 
         res.send(theOrder);
     });

@@ -6,7 +6,7 @@ export const createCart = (req, res) => {
     const { totalPrice } = req.body;
 
     db.query(sql, totalPrice, (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
         res.send(results);
     });
 }
@@ -16,7 +16,7 @@ export const cartInfo = (req, res) => {
     let sql = "SELECT * FROM carts WHERE userTokenId = ?;";
 
     db.query(sql, tokenId, (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
         res.send(results[0]);
     });
 }
@@ -25,7 +25,7 @@ export const carts = (req, res) => {
     let sql = "SELECT * FROM carts;";
 
     db.query(sql, id, (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
         res.send(results);
     });
 }

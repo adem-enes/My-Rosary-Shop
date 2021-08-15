@@ -3,11 +3,14 @@ import { Typography, Button, Divider, Grid, TextField } from '@material-ui/core'
 import Review from './Review';
 import Cards from 'react-credit-cards';
 import useStyles from './styles';
+import { useDispatch } from 'react-redux';
 import "react-credit-cards/es/styles-compiled.css";
 import { order } from '../../redux/api';
+import { getUserToken } from '../../redux/actions/tokens';
 
 const PaymentForm = ({ shippingData, backStep, nextStep, cartId, setOrder }) => {
     const classes = useStyles();
+    const dispatch = useDispatch();
     const [creditCart, setCreditCart] = useState({
         cvc: '',
         expiry: '',
@@ -46,6 +49,7 @@ const PaymentForm = ({ shippingData, backStep, nextStep, cartId, setOrder }) => 
         }
         console.log(cartData);
         order(orderData).then((response) => setOrder(response.data));
+        dispatch(getUserToken());
 
         setTimeout(() => nextStep(), 1000);
 

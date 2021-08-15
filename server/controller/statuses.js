@@ -4,7 +4,7 @@ export const getStatuses = (req, res) => {
     let sql = "SELECT * FROM statuses;";
 
     db.query(sql, (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
         res.send(results);
     });
 }
@@ -16,7 +16,7 @@ export const createStatuses = (req, res) => {
         "('Sipariş Kargoya Verildi')," +
         "('Sipariş Teslim Edildi');";
     db.query(sql, (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
         res.send({message: 'All Statuses Created'});
     });
 }

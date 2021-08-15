@@ -8,6 +8,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { getOrders } from '../../../../ApiServices';
 import useStyles from './style';
+import { order } from '../../../../../../redux/api';
 
 const Orders = ({ setActiveTab, setUpdateOrder }) => {
     const classes = useStyles();
@@ -18,8 +19,9 @@ const Orders = ({ setActiveTab, setUpdateOrder }) => {
         getOrders().then((response) => setOrders(response.data));
     }, []);
 
-    const update = (orderId) => {
-        setUpdateOrder(orderId);
+    const update = (orderId, cartId) => {
+        console.log(orderId, cartId);
+        setUpdateOrder({ orderId: orderId, cartId: cartId });
         setActiveTab(4);
     }
 
@@ -38,7 +40,7 @@ const Orders = ({ setActiveTab, setUpdateOrder }) => {
                         </IconButton>
                     </TableCell>
                     <TableCell component="th" scope="row" style={{ cursor: 'pointer' }}
-                        onClick={() => update(order.id)}>{order.id}</TableCell>
+                        onClick={() => update(order.id, order.cartId)}>{order.id}</TableCell>
                     <TableCell>{order.status}</TableCell>
                     <TableCell>{order.customerName}</TableCell>
                     <TableCell>{order.customerLastName}</TableCell>
@@ -85,7 +87,7 @@ const Orders = ({ setActiveTab, setUpdateOrder }) => {
 
     return (
         <>{!orders ? <CircularProgress /> : (
-            <TableContainer component={Paper} style={{marginTop: '10px'}}>
+            <TableContainer component={Paper} style={{ marginTop: '10px' }}>
                 <Table aria-label="collapsible table">
                     <TableHead>
                         <TableRow>

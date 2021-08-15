@@ -12,8 +12,9 @@ const Admin = () => {
     const classes = useStyles();
     const [activeTab, setActiveTab] = useState(0);
     const [openSide, setOpenSide] = useState(true);
+    const [openSwipe, setOpenSwipe] = useState(window.innerWidth);
     const [updateProduct, setUpdateProduct] = useState();
-    const [updateOrder, setUpdateOrder] = useState();
+    const [updateOrder, setUpdateOrder] = useState({});
     const props = {
         updateProduct, setUpdateProduct, activeTab, setActiveTab,
         updateOrder, setUpdateOrder
@@ -22,38 +23,43 @@ const Admin = () => {
     useEffect(() => {
         dispatch(getProducts());
     }, [dispatch]);
+
     useEffect(() => {
-        console.log("Total Width: " + window.screen.availWidth );
+        const setWidth = () => setOpenSwipe(window.innerWidth);
         
-    }, []);
+        window.addEventListener('resize', setWidth);
+    }, [openSwipe]);
 
     return (
         <div className={classes.root}>
             <Grid container>
-                <Grid item xs={12} sm={openSide ? 2 : 1}>
-                    <div className={openSide ? `${classes.nav}`
-                        : `${classes.nav} ${classes.noDisplay}`}
-                        style={{ margin: '10px 5px' }}>
-                        <SideBar activeTab={activeTab} setActiveTab={setActiveTab}
-                            setOpenSide={setOpenSide} />
-                    </div>
+                <Grid item xs={12} sm={openSide && openSwipe > 960 ? 2 : 1}>
                     <div className={!openSide ? classes.displayMenuIcon : classes.menuIcon}
                         onClick={() => setOpenSide((prev => !prev))}>
                         <MenuIcon />
                     </div>
-                    {/* <div>
-                        <SwipeableDrawer
-                            anchor="left"
-                            open={!openSide}
-                            onClose={() => setOpenSide((prev => !prev))}
-                            onOpen={() => setOpenSide((prev => !prev))}
-                        >
+
+                    {openSwipe > 960 ? (
+                        <div className={openSide ? `${classes.nav}`
+                            : `${classes.nav} ${classes.noDisplay}`}
+                            style={{ margin: '10px 5px' }}>
                             <SideBar activeTab={activeTab} setActiveTab={setActiveTab}
                                 setOpenSide={setOpenSide} />
-                        </SwipeableDrawer>
-                    </div> */}
+                        </div>
+                    ) : (
+                        <div>
+                            <SwipeableDrawer
+                                anchor="left"
+                                open={!openSide}
+                                onClose={() => setOpenSide((prev => !prev))}
+                                onOpen={() => setOpenSide((prev => !prev))}
+                            >
+                                <SideBar activeTab={activeTab} setActiveTab={setActiveTab}
+                                    setOpenSide={setOpenSide} />
+                            </SwipeableDrawer>
+                        </div>)}
                 </Grid>
-                <Grid item xs={12} sm={openSide ? 10 : 11}>
+                <Grid item xs={12} sm={openSide && openSwipe > 960 ? 10 : 11}>
                     {screens(activeTab, props)}
                 </Grid>
             </Grid>

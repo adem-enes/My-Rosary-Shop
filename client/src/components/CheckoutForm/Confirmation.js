@@ -7,7 +7,7 @@ import {
 const Confirmation = ({ order }) => {
     const currency = "₺";
 
-    function ccyFormat(num) {
+    const ccyFormat = (num) => {
         return `${num.toFixed(2)}`;
     }
 
@@ -39,7 +39,6 @@ const Confirmation = ({ order }) => {
                             <TableHead>
                                 <TableRow>
                                     <TableCell>Product</TableCell>
-                                    <TableCell align="center">Image</TableCell>
                                     <TableCell align="right">Qty.</TableCell>
                                     <TableCell align="right">Amount</TableCell>
                                     <TableCell align="right">Total</TableCell>
@@ -49,14 +48,10 @@ const Confirmation = ({ order }) => {
                                 {order.orderedProducts.map((row, index) => (
                                     <TableRow key={index}>
                                         <TableCell>{row.productName}</TableCell>
-                                        <TableCell align="center">
-                                            <img src={row.image}
-                                                alt={row.productName} height="30" />
-                                        </TableCell>
                                         <TableCell align="right">{row.productQuantity}</TableCell>
                                         <TableCell align="right">{ccyFormat(row.price)}</TableCell>
                                         <TableCell align="right">
-                                            {ccyFormat(row.total)}
+                                            {ccyFormat(Number(row.total))}
                                         </TableCell>
                                     </TableRow>
                                 ))}
@@ -64,10 +59,9 @@ const Confirmation = ({ order }) => {
                                 <TableRow >
                                     <TableCell rowSpan={3} />
                                     <TableCell rowSpan={3} />
-                                    <TableCell rowSpan={3} />
                                     <TableCell >Subtotal</TableCell>
                                     <TableCell align="right">
-                                        {ccyFormat(order.order.productsPrice)}</TableCell>
+                                        {ccyFormat(Number(order.order.productsPrice))}</TableCell>
                                 </TableRow>
                                 <TableRow>
                                     <TableCell>Shipping</TableCell>

@@ -10,14 +10,14 @@ export const createProductsTable = (req, res) => {
         "PRIMARY KEY (id), FOREIGN KEY (categoryId) REFERENCES categories (id));";
 
     db.query(sql, (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
     });
 }
 export const createCategoriesTable = (req, res) => {
     let sql = "CREATE TABLE IF NOT EXISTS categories(id INT NOT NULL AUTO_INCREMENT, categoryName VARCHAR(50), PRIMARY KEY (id))";
 
     db.query(sql, (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
     });
 }
 export const createCartsTable = (req, res) => {
@@ -27,7 +27,7 @@ export const createCartsTable = (req, res) => {
         "FOREIGN KEY (userTokenId) REFERENCES usersTokens(id) ON DELETE CASCADE);";
 
     db.query(sql, (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
     });
 }
 export const productsInTheCarts = (req, res) => {
@@ -37,7 +37,7 @@ export const productsInTheCarts = (req, res) => {
         "FOREIGN KEY (cartId) REFERENCES carts(id) ON DELETE CASCADE);";
 
     db.query(sql, (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
     });
 }
 export const createShippingMethodsTable = (req, res) => {
@@ -45,7 +45,7 @@ export const createShippingMethodsTable = (req, res) => {
         "shippingPrice DOUBLE(10,2) NOT NULL DEFAULT 0, PRIMARY KEY (id));";
 
     db.query(sql, (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
     });
 }
 
@@ -53,7 +53,7 @@ export const statuses = (req, res) => {
     let sql = "CREATE TABLE IF NOT EXISTS statuses(id INT NOT NULL AUTO_INCREMENT, status VARCHAR(50) NOT NULL UNIQUE,PRIMARY KEY (id));";
 
     db.query(sql, (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
     });
 }
 
@@ -66,12 +66,13 @@ export const createOrdersTable = (req, res) => {
         "orderDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
         "shippingCompany VARCHAR(45) NOT NULL, shippingPrice DOUBLE(10,2) NOT NULL, " +
         "productsPrice DOUBLE(10,2) NOT NULL, totalPrice DOUBLE(10,2) NOT NULL, " +
-        "status VARCHAR(50) NOT NULL, " +
+        "status VARCHAR(50) NOT NULL, cartId INT NOT NULL, " +
         "PRIMARY KEY (id), " +
-        "FOREIGN KEY (status) REFERENCES statuses (status) ON UPDATE CASCADE );";
+        "FOREIGN KEY (status) REFERENCES statuses (status) ON UPDATE CASCADE, " +
+        "FOREIGN KEY (cartId) REFERENCES carts (id) ON DELETE CASCADE);";
 
     db.query(sql, (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
     });
 }
 
@@ -81,7 +82,7 @@ export const createUsersTokensTable = (req, res) => {
         "PRIMARY KEY (id));"
 
     db.query(sql, (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
     });
 }
 
@@ -98,7 +99,7 @@ export const createUsersTable = (req, res) => {
     //TODO : Probably triggers can do it..
 
     db.query(sql, (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
     });
 }
 export const createAuthorizationsTable = (req, res) => {
@@ -106,7 +107,7 @@ export const createAuthorizationsTable = (req, res) => {
         "authName VARCHAR(50)NOT NULL UNIQUE, PRIMARY KEY (id));"
 
     db.query(sql, (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
     });
 }
 
@@ -139,7 +140,7 @@ const triggerProductsInCartsAfterInsert = () => {
                 WHERE id = NEW.cartId;
         END
         `;
-    db.query(sql, (error, results) => { if (error) throw error; });
+    db.query(sql, (error, results) => { if (error) console.log(error.message); });
 }
 const triggerProductsInCartsAfterUpdate = () => {
     let sql = `
@@ -152,7 +153,7 @@ const triggerProductsInCartsAfterUpdate = () => {
         END
         `;
 
-    db.query(sql, (error, results) => { if (error) throw error; });
+    db.query(sql, (error, results) => { if (error) console.log(error.message); });
 }
 const triggerProductsInCartsAfterDelete = () => {
     let sql = `
@@ -164,7 +165,7 @@ const triggerProductsInCartsAfterDelete = () => {
                 WHERE id = OLD.cartId;
         END
             `;
-    db.query(sql, (error, results) => { if (error) throw error; });
+    db.query(sql, (error, results) => { if (error) console.log(error.message); });
 }
 
 const triggerUsersTokensAfterInsert = () => {
@@ -174,7 +175,7 @@ const triggerUsersTokensAfterInsert = () => {
             INSERT INTO carts (userTokenId)VALUES (NEW.id);
         END;`
 
-    db.query(sql, (error, results) => { if (error) throw error; });
+    db.query(sql, (error, results) => { if (error) console.log(error.message); });
 }
 
 export const createAllTriggers = (req, res) => {

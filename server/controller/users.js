@@ -4,7 +4,7 @@ export const getUserToken = (req, res) => {
     let sql = "SELECT * FROM usersTokens;";
 
     db.query(sql, (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
         res.send(results);
     });
 }
@@ -14,7 +14,7 @@ export const createUserToken = (req, res) => {
     let sql = "INSERT INTO usersTokens (userToken) VALUES(UUID());"
 
     db.query(sql, (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
         const token = userToken(results.insertId, res);
     });
 }
@@ -26,7 +26,7 @@ const userToken = (tokenId, res) => {
     const formatterEN = new Intl.DateTimeFormat('en-GB', { dateStyle: 'full' }); // OUTPUT: "Tuesday, 22 June 2021"
 
     db.query(sql, [tokenId, tokenId], (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
 
         const token = results[0][0];
         const cart = results[1][0];
@@ -46,7 +46,7 @@ export const userLogin = (req, res) => {
     let sql = "SELECT * FROM users WHERE username=? AND password=?;";
 
     db.query(sql, [username, password], (error, results) => {
-        if (error) throw error;
+        if (error) console.log(error.message);
 
         if (results.length === 1 && results[0].authorization === 1) {
             const user = {
