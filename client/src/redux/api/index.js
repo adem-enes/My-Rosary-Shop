@@ -1,6 +1,6 @@
 import axios from 'axios';
-const url1 = 'http://localhost:3001';
-const url = 'http://185.87.253.110:3001';
+const url = 'http://localhost:3001';
+const url1 = 'http://185.87.253.110:3001';
 
 export const fetchProducts = () => axios.get(`${url}/products`);
 
